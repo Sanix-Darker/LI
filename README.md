@@ -2,13 +2,13 @@
 
 In French "langage interprété" Or `IL` in english for Interpreted Language, is a simple programming language Based on some Python Classes.
 
-# Requirements
+## Requirements
 
 - Python (3.x) is all you need
 - Any lib required
 
 
-# Example
+## Example of li code
 
 Example of LI code :
 INPUT:
@@ -28,7 +28,7 @@ Hello World !!!
 Taille de [1,2,3]  : 3
 ```
 
-# Tests
+## Tests
 
 You can performs some tests now :
 
@@ -45,6 +45,6 @@ python li.py ./tests/count.l
 python li.py ./tests/test.l
 ```
 
-# Author
+## Author
 
 - Sanix-darker
