@@ -5,35 +5,27 @@ import copy
 import json
 import numbers
 import sys
-import os
+from os import open as os_open, O_RDWR as os_O_RDWR, read as os_read, write as os_write, close as os_close
 import string
 
 
 # ##############################################################################
 # > Extras functions                                                           #
 # ##############################################################################
-def _Open(args):
-    return os.open(args[0].val.strip(), os.O_RDWR)
+def li_open(args):
+    return os_open(args[0].val.strip(), os_O_RDWR)
 
 
-def _Read(args):
-    return os.read(args[0].val, args[1].val)
+def li_read(args):
+    return os_read(args[0].val, args[1].val)
 
 
-def _Write(args):
-    return os.write(args[0].val, args[1].val)
+def li_write(args):
+    return os_write(args[0].val, args[1].val)
 
 
-def _Close(args):
-    return os.close(args[0].val)
-
-
-CATALOG = {
-    'open': _Open,
-    'read': _Read,
-    'write': _Write,
-    'close': _Close
-}
+def li_close(args):
+    return os_close(args[0].val)
 
 
 # ##############################################################################
@@ -44,7 +36,7 @@ class Error(Exception):
     pass
 
 
-class FunctionError(Error):
+class LiLiFunctionError(Error):
     def __init__(self, e, name):
         self.name = name.__str__()
         self.e = e
@@ -53,7 +45,7 @@ class FunctionError(Error):
         return self.name + ': ' + self.e.__str__()
 
 
-class UnboundVariableError(Error):
+class LiUnboundVariableError(Error):
     def __init__(self, e):
         self.e = e
 
@@ -61,7 +53,7 @@ class UnboundVariableError(Error):
         return 'unbound variable: ' + self.e.__str__()
 
 
-class JSOLSyntaxError(Error):
+class LiSyntaxError(Error):
     def __init__(self, msg):
         self.msg = msg
 
@@ -69,7 +61,7 @@ class JSOLSyntaxError(Error):
         return self.msg
 
 
-class ReservedWordError(Error):
+class LiReservedWordError(Error):
     def __init__(self, word):
         self.word = word
 
@@ -85,7 +77,7 @@ class Type(object):
     pass
 
 
-class Literal(Type):
+class LiLiteral(Type):
     def __init__(self, val, env):
         self.env = env
         self.val = copy.copy(val)
@@ -100,9 +92,9 @@ class Literal(Type):
         return dict([('lit', self.val)])
 
 
-class List(Literal):
+class LiList(LiLiteral):
     def __init__(self, val, env):
-        super(List, self).__init__(val, env)
+        super(LiList, self).__init__(val, env)
         for (i, v) in enumerate(self.val):
             self.val[i] = _Eval(v, env)
 
@@ -113,14 +105,14 @@ class List(Literal):
         return dict([('lit', map(lambda x: x.json(), self.val))])
 
 
-class Dict(Literal):
+class LiDict(LiLiteral):
     def __init__(self, val, env):
-        super(Dict, self).__init__(val, env)
+        super(LiDict, self).__init__(val, env)
         dict_env = env.copy()
         for (k, v) in self.val.iteritems():
             self.val[k] = _Eval(v, dict_env)
         for v in self.val.values():
-            if isinstance(v, Function):
+            if isinstance(v, LiFunction):
                 v._env = self.val
 
     def json(self):
@@ -129,25 +121,25 @@ class Dict(Literal):
                                map(lambda x: x.json(), self.val.values()))))])
 
 
-class String(Literal):
+class LiString(LiLiteral):
     pass
 
 
-class Number(Literal):
+class LiNumber(LiLiteral):
     def json(self):
         return self.val
 
 
-class Null(Literal):
+class LiNull(LiLiteral):
     def json(self):
         return self.val
 
     def __str__(self):
-        return 'Null'
+        return 'LiNull'
 
 
-class Function(Type):
-    class _FunctionEnv(object):
+class LiFunction(Type):
+    class _LiFunctionEnv(object):
         def __init__(self, env, run_env, og_func):
             self.val = og_func
             self._env = env
@@ -185,9 +177,9 @@ class Function(Type):
         return dict([('params', self._params), ('def', self._def)])
 
     def Eval(self, args):
-        return _ExecList(
+        return _ExecLiList(
             self._def,
-            self._FunctionEnv(self._env, dict(zip(self._params, args)), self))
+            self._LiFunctionEnv(self._env, dict(zip(self._params, args)), self))
 
 
 def Lit(val, env=None):
@@ -198,30 +190,8 @@ def Lit(val, env=None):
     return LITERALS[type(val)](val, env)
 
 
-TYPES = {
-    List: "List",
-    Dict: "Dict",
-    String: "String",
-    Number: "Number",
-    Function: "Function",
-    Null: "Null"
-}
-
-NoneType = type(None)
-
-LITERALS = {
-    list: List,
-    dict: Dict,
-    str: String,
-    int: Number,
-    bool: Number,
-    float: Number,
-    NoneType: Null,
-}
-
-
 ###############################################################################
-# Built-in Functions                                                          #
+# Built-in LiFunctions                                                          #
 ###############################################################################
 
 def _Cond(func, val):
@@ -247,7 +217,6 @@ def _Div(args):
 def _Println(args):
     for arg_ in args:
         print(arg_)
-        print()
 
 
 def _Print(args):
@@ -329,22 +298,11 @@ def _Import(args):
         CATALOG.update(module.CATALOG)
 
 
-CATALOG = {
-    '+': _Add, '-': _Sub, '*': _Mult, '/': _Div, 'print': _Print,
-    'println': _Println, '=': _Eq, '!': _NEq, '<': _Lt, '>': _Gt, '<=': _LtE,
-    '>=': _GtE, 'len': _Len, 'ins': _Ins, 'del': _Del, 'cut': _Cut,
-    'map': _Map, 'fold': _Fold, 'filter': _Filter, 'assert': _Assert,
-    'round': _Round, 'type': _Type, 'import': _Import
-}
-
-RESERVED = [*CATALOG.keys(), 'if', 'params', 'def', 'lit']
-
-
 ###############################################################################
 # Interpreter                                                                 #
 ###############################################################################
 
-def _ExecList(val, env):
+def _ExecLiList(val, env):
     if len(val) == 0:
         return Lit(None)
     for exp in val[:-1]:
@@ -352,25 +310,25 @@ def _ExecList(val, env):
     return _Eval(val[-1], env, True)
 
 
-def _EvalList(exp, env, tail_pos=False):
+def _EvalLiList(exp, env, tail_pos=False):
     if exp[0] in CATALOG:
         return Lit(CATALOG[exp[0]](exp[1:]))
-    if isinstance(exp[0], (Dict, List, String)):
+    if isinstance(exp[0], (LiDict, LiList, LiString)):
         if len(exp) == 2:
             return Lit(exp[0].val[exp[1].val])
         ret = exp[0].val[exp[1].val] = exp[2]
         return ret
-    if isinstance(exp[0], Function):
+    if isinstance(exp[0], LiFunction):
         return exp[0].Eval(exp[1:], tail_pos)
-    raise JSOLSyntaxError('not a function name, env:', env)
+    raise LiSyntaxError('not a function name, env:', env)
 
 
 def _IfBlock(exp, env, tail_pos=False):
     for i in range(0, len(exp) - 1, 2):
         if _Eval(exp[i], env).val:
-            return _ExecList(exp[i + 1], env)
+            return _ExecLiList(exp[i + 1], env)
     if len(exp) % 2:
-        return _ExecList(exp[-1], env)
+        return _ExecLiList(exp[-1], env)
     return Lit(None)
 
 
@@ -385,14 +343,14 @@ def _Eval(exp, env, tail_pos=False):
         if 'lit' in exp:
             return Lit(exp['lit'], env)
         if 'def' in exp:
-            return Function(exp, env)
+            return LiFunction(exp, env)
         new_env = copy.copy(env)
         ret = Lit(None)
         for (k, v) in exp.items():
-            if k in RESERVED: raise ReservedWordError(k)
+            if k in RESERVED: raise LiReservedWordError(k)
             ret = env[k] = _Eval(v, new_env)
         for k in exp:
-            if isinstance(env[k], Function):
+            if isinstance(env[k], LiFunction):
                 temp_env = env.copy()
                 temp_env.update(env[k]._env)
                 env[k]._env = temp_env
@@ -405,16 +363,16 @@ def _Eval(exp, env, tail_pos=False):
         if exp[0] == env and tail_pos:
             return exp, env
         try:
-            result = _EvalList(exp, env, tail_pos)
+            result = _EvalLiList(exp, env, tail_pos)
             while isinstance(result, tuple):
-                result = _EvalList(result[0], result[1], tail_pos)
+                result = _EvalLiList(result[0], result[1], tail_pos)
             return result
         except Exception as e:
-            raise FunctionError(e, name)
+            raise LiLiFunctionError(e, name)
     try:
         return env[exp]
     except Exception as e:
-        raise UnboundVariableError(e)
+        raise LiUnboundVariableError(e)
 
 
 def Eval(json_dict, **kwargs):
@@ -436,6 +394,8 @@ def main():
         with open(arg_, 'r') as file_:
             j = json.load(file_)
             Eval(j)
+
+
 # if __name__ == '__main__':
 #     main()
 
@@ -445,7 +405,7 @@ def Error(s):
     exit(0)
 
 
-def _ParseString(code):
+def _ParseLiString(code):
     buf = ''
     for i in range(len(code)):
         if code[i] == '"' and code[i - 1] != '\\':
@@ -513,14 +473,14 @@ def _ParseBlock(code):
     return code.lstrip()[1:], statements
 
 
-def _ParseFunction(code):
+def _ParseLiFunction(code):
     params, rest = code.split(')', 1)
     params = params.split()
     rest, body = _ParseBlock(rest)
     return rest, {'params': params, 'def': body}
 
 
-def _ParseList(code):
+def _ParseLiList(code):
     statements = []
     while code.lstrip()[0] != ']':
         code, statement = _Parse(code)
@@ -528,7 +488,7 @@ def _ParseList(code):
     return code.lstrip()[1:], {'lit': statements}
 
 
-def _ParseDict(code):
+def _ParseLiDict(code):
     code, d_list = _ParseBlock('{' + code)
     d = {}
     [d.update(x) for x in d_list]
@@ -564,18 +524,18 @@ def _Parse(code):
             rest, result = _Parse(code[i:])
             return rest, {buf: result}
         if c == '"':
-            return _ParseString(code[i:])
+            return _ParseLiString(code[i:])
         if c == '(':
             if buf == 'def':
-                return _ParseFunction(code[i:])
+                return _ParseLiFunction(code[i:])
             code, call = _ParseCall(code[i:], buf)
             while len(code.lstrip()) and code.lstrip()[0] == '(':
                 code, call = _ParseCall(code.lstrip()[1:], call)
             return code, call
         if c == '[':
-            return _ParseList(code[i:])
+            return _ParseLiList(code[i:])
         if c == '{':
-            return _ParseDict(code[i:])
+            return _ParseLiDict(code[i:])
         buf += c
         has_space = False
     return code[i:], _GetNum(buf)
@@ -589,10 +549,42 @@ def Parse(code):
     return d
 
 
+TYPES = {
+    LiList: "LiList",
+    LiDict: "LiDict",
+    LiString: "LiString",
+    LiNumber: "LiNumber",
+    LiFunction: "LiFunction",
+    LiNull: "LiNull"
+}
+
+NoneType = type(None)
+
+LITERALS = {
+    list: LiList,
+    dict: LiDict,
+    str: LiString,
+    int: LiNumber,
+    bool: LiNumber,
+    float: LiNumber,
+    NoneType: LiNull,
+}
+
+CATALOG = {
+    'open': li_open, 'read': li_read, 'write': li_write, 'close': li_close,
+    '+': _Add, '-': _Sub, '*': _Mult, '/': _Div, 'print': _Print,
+    'println': _Println, '=': _Eq, '!': _NEq, '<': _Lt, '>': _Gt, '<=': _LtE,
+    '>=': _GtE, 'len': _Len, 'ins': _Ins, 'del': _Del, 'cut': _Cut,
+    'map': _Map, 'fold': _Fold, 'filter': _Filter, 'assert': _Assert,
+    'round': _Round, 'type': _Type, 'import': _Import
+}
+
+RESERVED = [*CATALOG.keys(), 'if', 'params', 'def', 'lit']
+
 if __name__ == '__main__':
     if len(sys.argv[1:]) >= 1:
         for arg in sys.argv[1:]:
             with open(arg, 'r') as f:
                 Eval(Parse(f.read()))
-    else: # editor mode
+    else:  # editor mode
         pass
