@@ -9,6 +9,11 @@ from os import open as os_open, O_RDWR as os_O_RDWR, read as os_read, write as o
 import string
 
 
+def Present():
+    print("Li 0.1 Build using Python 3.7.3")
+    print('Type "help", "copyright", "credits" or "license" for more information.')
+
+
 class Li:
     def __init__(self):
         self.TYPES = {
@@ -507,6 +512,8 @@ class Li:
         return d
 
 
+
+
 if __name__ == '__main__':
     if len(sys.argv[1:]) >= 1:
         li = Li()
@@ -514,4 +521,4 @@ if __name__ == '__main__':
             with open(arg, 'r') as f:
                 li.Eval(li.Parse(f.read()))
     else:  # editor mode
-        pass
+        Present()
