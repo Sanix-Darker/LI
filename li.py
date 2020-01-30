@@ -8,9 +8,32 @@ import sys
 from os import open as os_open, O_RDWR as os_O_RDWR, read as os_read, write as os_write, close as os_close
 import string
 
+KEYWORDS = {
+    "en": {
+        'open': 'open', 'read': 'read', 'write': 'write', 'close': 'close',
+        '+': '+', '-': '-', '*': '*', '/': '/', 'print': 'print',
+        'println': 'println', '=': '=', '!': '!', '<': '<', '>': '>', '<=': '<=',
+        '>=': '>=', 'len': 'len', 'ins': 'ins', 'del': 'del', 'cut': 'cut',
+        'map': 'map', 'fold': 'fold', 'filter': 'filter', 'assert': 'assert',
+        'round': 'round', 'type': 'type', 'import': 'import'
+    },
+    "frac": {
+
+    }
+}
+
+
+def safe_check_attr_keyword(obj, key, default_obj):
+    try:
+        return obj[key]
+    except Exception as es:
+        return default_obj[key]
+
 
 class Li:
-    def __init__(self):
+    def __init__(self, keywords=None, lang="en"):
+        if keywords is None:
+            keywords = KEYWORDS
         self.version = "0.1"
 
         self.TYPES = {
@@ -35,12 +58,48 @@ class Li:
         }
 
         self.CATALOG = {
-            'open': self.li_open, 'read': self.li_read, 'write': self.li_write, 'close': self.li_close,
-            '+': self._Add, '-': self._Sub, '*': self._Mult, '/': self._Div, 'print': self._Print,
-            'println': self._Println, '=': self._Eq, '!': self._NEq, '<': self._Lt, '>': self._Gt, '<=': self._LtE,
-            '>=': self._GtE, 'len': self._Len, 'ins': self._Ins, 'del': self._Del, 'cut': self._Cut,
-            'map': self._Map, 'fold': self._Fold, 'filter': self._Filter, 'assert': self._Assert,
-            'round': self._Round, 'type': self._Type, 'import': self._Import
+            safe_check_attr_keyword(
+                keywords[lang], 'open', keywords['en']
+            )['open']: self.li_open,
+
+            safe_check_attr_keyword(
+                keywords[lang], 'open', keywords['en']
+            )
+            ['read']: self.li_read,
+            safe_check_attr_keyword(
+                keywords[lang], 'open', keywords['en']
+            )
+            ['write']: self.li_write,
+            safe_check_attr_keyword(
+                keywords[lang], 'open', keywords['en']
+            )
+            ['close']: self.li_close,
+            safe_check_attr_keyword(
+                keywords[lang], 'open', keywords['en']
+            )
+            ['+']: self._Add,
+            keywords[lang]['-']: self._Sub,
+            keywords[lang]['*']: self._Mult,
+            keywords[lang]['/']: self._Div,
+            keywords[lang]['print']: self._Print,
+            keywords[lang]['println']: self._Println,
+            keywords[lang]['=']: self._Eq,
+            keywords[lang]['!']: self._NEq,
+            keywords[lang]['<']: self._Lt,
+            keywords[lang]['>']: self._Gt,
+            keywords[lang]['<=']: self._LtE,
+            keywords[lang]['>=']: self._GtE,
+            keywords[lang]['len']: self._Len,
+            keywords[lang]['ins']: self._Ins,
+            keywords[lang]['del']: self._Del,
+            keywords[lang]['cut']: self._Cut,
+            keywords[lang]['map']: self._Map,
+            keywords[lang]['fold']: self._Fold,
+            keywords[lang]['filter']: self._Filter,
+            keywords[lang]['assert']: self._Assert,
+            keywords[lang]['round']: self._Round,
+            keywords[lang]['type']: self._Type,
+            keywords[lang]['import']: self._Import
         }
 
         self.RESERVED = [*self.CATALOG.keys(), 'if', 'params', 'def', 'lit']
