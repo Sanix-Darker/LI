@@ -8,43 +8,45 @@ import sys
 from os import open as os_open, O_RDWR as os_O_RDWR, read as os_read, write as os_write, close as os_close
 import string
 
-DEFAULT_LANG = "en"
+
+# KEYWORDS = {
+#     "lang": {
+#         'open': 'open', 'read': 'read', 'write': 'write', 'close': 'close',
+#         '+': '+', '-': '-', '*': '*', '/': '/', 'print': 'print',
+#         'println': 'println', '=': '=', '!': '!', '<': '<', '>': '>', '<=': '<=',
+#         '>=': '>=', 'len': 'len', 'ins': 'ins', 'del': 'del', 'cut': 'cut',
+#         'map': 'map', 'fold': 'fold', 'filter': 'filter', 'assert': 'assert',
+#         'round': 'round', 'type': 'type', 'import': 'import'
+#     },
+# }
+
 KEYWORDS = {
-    "en": {
+    "lang": {
         'open': 'open', 'read': 'read', 'write': 'write', 'close': 'close',
-        '+': '+', '-': '-', '*': '*', '/': '/', 'print': 'print',
-        'println': 'println', '=': '=', '!': '!', '<': '<', '>': '>', '<=': '<=',
-        '>=': '>=', 'len': 'len', 'ins': 'ins', 'del': 'del', 'cut': 'cut',
-        'map': 'map', 'fold': 'fold', 'filter': 'filter', 'assert': 'assert',
-        'round': 'round', 'type': 'type', 'import': 'import'
-    },
-    "fr": {
-        'open': 'ouvre', 'read': 'lit', 'write': 'ecrit', 'close': 'ferme',
         '+': '+', '-': '-', '*': '*', '/': '/', 'print': 'affiche',
-        'println': 'afficheln', '=': '=', '!': '!', '<': '<', '>': '>', '<=': '<=',
+        'println': 'affiche_xa', '=': '=', '!': '!', '<': '<', '>': '>', '<=': '<=',
         '>=': '>=', 'len': 'taille', 'ins': 'ins', 'del': 'supr', 'cut': 'cut',
         'map': 'map', 'fold': 'fold', 'filter': 'filter', 'assert': 'assert',
         'round': 'round', 'type': 'type', 'import': 'import'
-    },
-    "frac": {
-
     }
 }
 
 
-def safe_check_attr_keyword(obj, key, default_obj):
+def safe_check_attr_keyword(obj, key):
     try:
         return obj[key]
     except Exception as es:
         print("es: ", es)
-        return default_obj[key]
+        exit()
 
 
 class Li:
-    def __init__(self, keywords=None, lang="en"):
+    def __init__(self, lang="lang", keywords=None, ):
         if keywords is None:
             keywords = KEYWORDS
         self.version = "0.1"
+
+        self.lang = lang
 
         self.TYPES = {
             self.LiList: "LiList",
@@ -69,111 +71,111 @@ class Li:
 
         self.CATALOG = {
             safe_check_attr_keyword(
-                keywords[lang], 'open', KEYWORDS[DEFAULT_LANG]
+                keywords[lang], 'open'
             ): self.li_open,
 
             safe_check_attr_keyword(
-                keywords[lang], 'read', KEYWORDS[DEFAULT_LANG]
+                keywords[lang], 'read'
             ): self.li_read,
 
             safe_check_attr_keyword(
-                keywords[lang], 'write', KEYWORDS[DEFAULT_LANG]
+                keywords[lang], 'write'
             ): self.li_write,
 
             safe_check_attr_keyword(
-                keywords[lang], 'close', KEYWORDS[DEFAULT_LANG]
+                keywords[lang], 'close'
             ): self.li_close,
 
             safe_check_attr_keyword(
-                keywords[lang], '+', KEYWORDS[DEFAULT_LANG]
+                keywords[lang], '+'
             ): self._Add,
 
             safe_check_attr_keyword(
-                keywords[lang], '-', KEYWORDS[DEFAULT_LANG]
+                keywords[lang], '-'
             ): self._Sub,
 
             safe_check_attr_keyword(
-                keywords[lang], '*', KEYWORDS[DEFAULT_LANG]
+                keywords[lang], '*'
             ): self._Mult,
 
             safe_check_attr_keyword(
-                keywords[lang], '/', KEYWORDS[DEFAULT_LANG]
+                keywords[lang], '/'
             ): self._Div,
 
             safe_check_attr_keyword(
-                keywords[lang], 'print', KEYWORDS[DEFAULT_LANG]
+                keywords[lang], 'print'
             ): self._Print,
 
             safe_check_attr_keyword(
-                keywords[lang], 'println', KEYWORDS[DEFAULT_LANG]
+                keywords[lang], 'println'
             ): self._Println,
 
             safe_check_attr_keyword(
-                keywords[lang], '=', KEYWORDS[DEFAULT_LANG]
+                keywords[lang], '='
             ): self._Eq,
 
             safe_check_attr_keyword(
-                keywords[lang], '!', KEYWORDS[DEFAULT_LANG]
+                keywords[lang], '!'
             ): self._NEq,
 
             safe_check_attr_keyword(
-                keywords[lang], '<', KEYWORDS[DEFAULT_LANG]
+                keywords[lang], '<'
             ): self._Lt,
 
             safe_check_attr_keyword(
-                keywords[lang], '>', KEYWORDS[DEFAULT_LANG]
+                keywords[lang], '>'
             ): self._Gt,
 
             safe_check_attr_keyword(
-                keywords[lang], '<=', KEYWORDS[DEFAULT_LANG]
+                keywords[lang], '<='
             ): self._LtE,
 
             safe_check_attr_keyword(
-                keywords[lang], '>=', KEYWORDS[DEFAULT_LANG]
+                keywords[lang], '>='
             ): self._GtE,
 
             safe_check_attr_keyword(
-                keywords[lang], 'len', KEYWORDS[DEFAULT_LANG]
+                keywords[lang], 'len'
             ): self._Len,
 
             safe_check_attr_keyword(
-                keywords[lang], 'ins', KEYWORDS[DEFAULT_LANG]
+                keywords[lang], 'ins'
             ): self._Ins,
 
             safe_check_attr_keyword(
-                keywords[lang], 'del', KEYWORDS[DEFAULT_LANG]
+                keywords[lang], 'del'
             ): self._Del,
 
             safe_check_attr_keyword(
-                keywords[lang], 'cut', KEYWORDS[DEFAULT_LANG]
+                keywords[lang], 'cut'
             ): self._Cut,
 
             safe_check_attr_keyword(
-                keywords[lang], 'map', KEYWORDS[DEFAULT_LANG]
+                keywords[lang], 'map'
             ): self._Map,
 
             safe_check_attr_keyword(
-                keywords[lang], 'fold', KEYWORDS[DEFAULT_LANG]
+                keywords[lang], 'fold'
             ): self._Fold,
 
             safe_check_attr_keyword(
-                keywords[lang], 'filter', KEYWORDS[DEFAULT_LANG]
+                keywords[lang], 'filter'
             ): self._Filter,
 
             safe_check_attr_keyword(
-                keywords[lang], 'assert', KEYWORDS[DEFAULT_LANG]
+                keywords[lang], 'assert'
             ): self._Assert,
 
             safe_check_attr_keyword(
-                keywords[lang], 'round', KEYWORDS[DEFAULT_LANG]
+                keywords[lang], 'round'
             ): self._Round,
 
             safe_check_attr_keyword(
-                keywords[lang], 'type', KEYWORDS[DEFAULT_LANG]
+                keywords[lang], 'type'
             ): self._Type,
 
             safe_check_attr_keyword(
-                keywords[lang], 'import', KEYWORDS[DEFAULT_LANG]
+                keywords[lang], 'import'
             ): self._Import
         }
 
@@ -228,7 +230,7 @@ class Li:
         def __str__(self):
             return self.word + ' is a reserved word'
 
-    # > Types                                                                       #
+    # > Types                                                                     #
     # -----------------------------------------------------------------------------
 
     class Type(object):
@@ -250,9 +252,10 @@ class Li:
 
     class LiList(LiLiteral):
         def __init__(self, val, env):
-            super(self.LiList, self).__init__(val, env)
+            li = Li()
+            super(li.LiList, self).__init__(val, env)
             for (i, v) in enumerate(self.val):
-                self.val[i] = self._Eval(v, env)
+                self.val[i] = li._Eval(v, env)
 
         def __str__(self):
             return str(map(lambda x: x.__str__(), self.val))
@@ -262,12 +265,13 @@ class Li:
 
     class LiDict(LiLiteral):
         def __init__(self, val, env):
-            super(self.LiDict, self).__init__(val, env)
+            li = Li()
+            super(li.LiDict, self).__init__(val, env)
             dict_env = env.copy()
-            for (k, v) in self.val.iteritems():
-                self.val[k] = self._Eval(v, dict_env)
+            for (k, v) in self.val.items():
+                self.val[k] = li._Eval(v, dict_env)
             for v in self.val.values():
-                if isinstance(v, self.LiFunction):
+                if isinstance(v, li.LiFunction):
                     v._env = self.val
 
         def json(self):
@@ -442,7 +446,7 @@ class Li:
             ret = exp[0].val[exp[1].val] = exp[2]
             return ret
         if isinstance(exp[0], self.LiFunction):
-            return exp[0].Eval(exp[1:], tail_pos)
+            return exp[0].Eval(exp[1:])
         raise self.LiSyntaxError('not a function name, env:', env)
 
     def _IfBlock(self, exp, env, tail_pos=False):
@@ -599,7 +603,6 @@ class Li:
         try:
             return float(num)
         except Exception as es:
-            print(es)
             return num
 
     def _Parse(self, code):
@@ -645,13 +648,13 @@ class Li:
     def Present(self):
         print("Li " + str(self.version) + " Build using Python 3.7.3")
         print('Hit `run li your_script.l`, for more information contact @sanixdarker.')
+        print('--')
 
 
 if __name__ == '__main__':
-    li = Li(lang="fr")
-    if len(sys.argv[1:]) >= 1:
-        for arg in sys.argv[1:]:
-            with open(arg, 'r') as f:
-                li.Eval(li.Parse(f.read()))
-    else:  # editor mode
-        li.Present()
+    li = Li()
+    li.Present()
+    for arg in sys.argv[1:]:
+        with open(arg, 'r') as f:
+            li.Eval(li.Parse(f.read()))
+    print()
