@@ -17,26 +17,34 @@ In French "langage interprété" Or `IL` in english for Interpreted Language, is
 ## Syntax
 
 - Basic
+```
     - 'a: 5'                     -> assignment
     - 'fct:fonc(): {...}'                 -> function definition
     - 'import("test_import_file")'  -> import a module
+```
 
-   Lists
+- Lists
+```
     - 'test: [1, 2, 3]'           -> list literal
     - 'del(l)'              -> delete and return first element in list
     - 'ins(l 0 5)'           -> insert 5 into the beginning of the list
+```
 
-   Dictionaries
+- Dictionaries
+```
     - 'lt: {"a": 5, "b": 2}'    -> dictionary literal
     - 'lt["a"]'          -> get the value with the key "a"
+```
 
-   If block
+- If block
+```
     - 'if >(i 0) {                   |
           <cond>, [...],             |
           <cond>, [...],             |
           ...                        |
           [...]                      |
        }'                            -> if/else
+```
 
 ## Example of `li` code
 
