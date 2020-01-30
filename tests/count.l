@@ -1,11 +1,11 @@
 counter:100
-rec:def() {
+rec:fonc() {
    affiche(counter " ")
    if >(counter:-(counter 1) 0) {
       rec()
    }
 }
-main:def() {
+main:fonc() {
    affiche_xa("Simple count down from" counter)
    rec()
    affiche_xa()

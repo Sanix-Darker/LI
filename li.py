@@ -179,7 +179,7 @@ class Li:
             ): self._Import
         }
 
-        self.RESERVED = [*self.CATALOG.keys(), 'if', 'params', 'def', 'lit']
+        self.RESERVED = [*self.CATALOG.keys(), 'if', 'params', 'fonc', 'lit']
 
     # > Extras functions                                                           #
     # ------------------------------------------------------------------------------
@@ -324,12 +324,12 @@ class Li:
         def __init__(self, d, env):
             self._env = env.copy()
             self._params = d.get('params', [])
-            self._def = d.get('def', [])
+            self._def = d.get('fonc', [])
             self._run_env = {}
             self.val = self
 
         def json(self):
-            return dict([('params', self._params), ('def', self._def)])
+            return dict([('params', self._params), ('fonc', self._def)])
 
         def Eval(self, args):
             li = Li()
@@ -468,7 +468,7 @@ class Li:
         if isinstance(exp, dict):
             if 'lit' in exp:
                 return self.Lit(exp['lit'], env)
-            if 'def' in exp:
+            if 'fonc' in exp:
                 return self.LiFunction(exp, env)
             new_env = copy.copy(env)
             ret = self.Lit(None)
@@ -580,7 +580,7 @@ class Li:
         params, rest = code.split(')', 1)
         params = params.split()
         rest, body = self._ParseBlock(rest)
-        return rest, {'params': params, 'def': body}
+        return rest, {'params': params, 'fonc': body}
 
     def _ParseLiList(self, code):
         statements = []
@@ -624,7 +624,7 @@ class Li:
             if c == '"':
                 return self._ParseLiString(code[i:])
             if c == '(':
-                if buf == 'def':
+                if buf == 'fonc':
                     return self._ParseLiFunction(code[i:])
                 code, call = self._ParseCall(code[i:], buf)
                 while len(code.lstrip()) and code.lstrip()[0] == '(':
