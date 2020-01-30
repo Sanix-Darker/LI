@@ -321,3 +321,278 @@ def _Round(args):
 def _Type(args):
     return TYPES[type(args[0])]
 
+
+def _Import(args):
+    global CATALOG
+    for arg_ in args:
+        module = __import__(arg_.val)
+        CATALOG.update(module.CATALOG)
+
+
+CATALOG = {
+    '+': _Add, '-': _Sub, '*': _Mult, '/': _Div, 'print': _Print,
+    'println': _Println, '=': _Eq, '!': _NEq, '<': _Lt, '>': _Gt, '<=': _LtE,
+    '>=': _GtE, 'len': _Len, 'ins': _Ins, 'del': _Del, 'cut': _Cut,
+    'map': _Map, 'fold': _Fold, 'filter': _Filter, 'assert': _Assert,
+    'round': _Round, 'type': _Type, 'import': _Import
+}
+
+RESERVED = [*CATALOG.keys(), 'if', 'params', 'def', 'lit']
+
+
+###############################################################################
+# Interpreter                                                                 #
+###############################################################################
+
+def _ExecList(val, env):
+    if len(val) == 0:
+        return Lit(None)
+    for exp in val[:-1]:
+        _Eval(exp, env)
+    return _Eval(val[-1], env, True)
+
+
+def _EvalList(exp, env, tail_pos=False):
+    if exp[0] in CATALOG:
+        return Lit(CATALOG[exp[0]](exp[1:]))
+    if isinstance(exp[0], (Dict, List, String)):
+        if len(exp) == 2:
+            return Lit(exp[0].val[exp[1].val])
+        ret = exp[0].val[exp[1].val] = exp[2]
+        return ret
+    if isinstance(exp[0], Function):
+        return exp[0].Eval(exp[1:], tail_pos)
+    raise JSOLSyntaxError('not a function name, env:', env)
+
+
+def _IfBlock(exp, env, tail_pos=False):
+    for i in range(0, len(exp) - 1, 2):
+        if _Eval(exp[i], env).val:
+            return _ExecList(exp[i + 1], env)
+    if len(exp) % 2:
+        return _ExecList(exp[-1], env)
+    return Lit(None)
+
+
+def _Eval(exp, env, tail_pos=False):
+    if isinstance(exp, Type):
+        return exp
+    if isinstance(exp, str) and exp in CATALOG:
+        return exp
+    if isinstance(exp, numbers.Number):
+        return Lit(exp, env)
+    if isinstance(exp, dict):
+        if 'lit' in exp:
+            return Lit(exp['lit'], env)
+        if 'def' in exp:
+            return Function(exp, env)
+        new_env = copy.copy(env)
+        ret = Lit(None)
+        for (k, v) in exp.items():
+            if k in RESERVED: raise ReservedWordError(k)
+            ret = env[k] = _Eval(v, new_env)
+        for k in exp:
+            if isinstance(env[k], Function):
+                temp_env = env.copy()
+                temp_env.update(env[k]._env)
+                env[k]._env = temp_env
+        return ret
+    if isinstance(exp, list):
+        name = exp[0]
+        if name == 'if':
+            return _IfBlock(exp[1:], env, tail_pos)
+        exp = list(map(lambda x: _Eval(x, env), exp))
+        if exp[0] == env and tail_pos:
+            return exp, env
+        try:
+            result = _EvalList(exp, env, tail_pos)
+            while isinstance(result, tuple):
+                result = _EvalList(result[0], result[1], tail_pos)
+            return result
+        except Exception as e:
+            raise FunctionError(e, name)
+    try:
+        return env[exp]
+    except Exception as e:
+        raise UnboundVariableError(e)
+
+
+def Eval(json_dict, **kwargs):
+    env = {}
+    if kwargs:
+        json_dict.update(kwargs)
+    try:
+        _Eval(json_dict, env)
+        return env['main'].Eval([])
+    except Exception as e:
+        print('Exception:', e)
+
+
+def main():
+    if len(sys.argv) < 2:
+        print('usage: jsol.py <jsol_files>')
+        exit(0)
+    for arg_ in sys.argv[1:]:
+        with open(arg_, 'r') as file_:
+            j = json.load(file_)
+            Eval(j)
+# if __name__ == '__main__':
+#     main()
+
+
+def Error(s):
+    print(s)
+    exit(0)
+
+
+def _ParseString(code):
+    buf = ''
+    for i in range(len(code)):
+        if code[i] == '"' and code[i - 1] != '\\':
+            return code[i + 1:], {'lit': buf}
+        if code[i] != '\\' or code[i - 1] == '\\':
+            if code[i - 1] == '\\' and code[i] == 'n':
+                buf += '\n'
+                continue
+            buf += code[i]
+
+
+def _GetParens(code):
+    val = 0
+    for i in range(len(code)):
+        if code[i] == '(':
+            val += 1
+        if code[i] == ')':
+            if val == 0:
+                return code[:i], code[i + 1:]
+            val -= 1
+    Error('No closing parens')
+
+
+def _ParseCall(code, name):
+    args, rest = _GetParens(code)
+    args_list = []
+    while len(args.strip()):
+        args, arg_ = _Parse(args)
+        args_list.append(arg_)
+    return rest, [name] + args_list
+
+
+def _ParseCond(if_list, code):
+    cond, code = code.split('{', 1)
+    if_list.append(_Parse(cond)[1])
+    code, statements = _ParseBlock('{' + code)
+    if_list.append(statements)
+    return code
+
+
+def _ParseIf(code):
+    if_list = ['if']
+    code = _ParseCond(if_list, code)
+    temp, next_ = _Parse(code)
+    while next_ == 'elif':
+        code = temp
+        _ParseCond(if_list, code)
+        temp, next_ = _Parse(code)
+    if next_ == 'else':
+        code = temp
+        code, statements = _ParseBlock(code)
+        if_list.append(statements)
+    return code, if_list
+
+
+def _ParseBlock(code):
+    code = code.lstrip()
+    if code[0] != '{':
+        Error('Code block must begin with "{"')
+    code = code[1:]
+    statements = []
+    while code.lstrip()[0] != '}':
+        code, statement = _Parse(code)
+        statements.append(statement)
+    return code.lstrip()[1:], statements
+
+
+def _ParseFunction(code):
+    params, rest = code.split(')', 1)
+    params = params.split()
+    rest, body = _ParseBlock(rest)
+    return rest, {'params': params, 'def': body}
+
+
+def _ParseList(code):
+    statements = []
+    while code.lstrip()[0] != ']':
+        code, statement = _Parse(code)
+        statements.append(statement)
+    return code.lstrip()[1:], {'lit': statements}
+
+
+def _ParseDict(code):
+    code, d_list = _ParseBlock('{' + code)
+    d = {}
+    [d.update(x) for x in d_list]
+    return code, {'lit': d}
+
+
+def _GetNum(num):
+    if num == 'null':
+        return None
+    if num.isdigit():
+        return int(num)
+    try:
+        return float(num)
+    except Exception as es:
+        print(es)
+        return num
+
+
+def _Parse(code):
+    global i
+    buf = ''
+    has_space = False
+    for i in range(1, len(code) + 1):
+        c = code[i - 1]
+        if c in string.whitespace + ',;':
+            has_space = True
+            continue
+        if has_space and buf or c in [']', '}', ')']:
+            if buf == 'if':
+                return _ParseIf(code[i - 1:])
+            return code[i - 1:], _GetNum(buf)
+        if c == ':':
+            rest, result = _Parse(code[i:])
+            return rest, {buf: result}
+        if c == '"':
+            return _ParseString(code[i:])
+        if c == '(':
+            if buf == 'def':
+                return _ParseFunction(code[i:])
+            code, call = _ParseCall(code[i:], buf)
+            while len(code.lstrip()) and code.lstrip()[0] == '(':
+                code, call = _ParseCall(code.lstrip()[1:], call)
+            return code, call
+        if c == '[':
+            return _ParseList(code[i:])
+        if c == '{':
+            return _ParseDict(code[i:])
+        buf += c
+        has_space = False
+    return code[i:], _GetNum(buf)
+
+
+def Parse(code):
+    d = {}
+    while code:
+        code, var = _Parse(code)
+        d.update(var)
+    return d
+
+
+if __name__ == '__main__':
+    if len(sys.argv[1:]) >= 1:
+        for arg in sys.argv[1:]:
+            with open(arg, 'r') as f:
+                Eval(Parse(f.read()))
+    else: # editor mode
+        pass
