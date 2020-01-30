@@ -9,13 +9,10 @@ from os import open as os_open, O_RDWR as os_O_RDWR, read as os_read, write as o
 import string
 
 
-def Present():
-    print("Li 0.1 Build using Python 3.7.3")
-    print('Type "help", "copyright", "credits" or "license" for more information.')
-
-
 class Li:
     def __init__(self):
+        self.version = "0.1"
+
         self.TYPES = {
             self.LiList: "LiList",
             self.LiDict: "LiDict",
@@ -373,7 +370,7 @@ class Li:
             self._Eval(json_dict, env)
             return env['main'].Eval([])
         except Exception as e:
-             print('Exception:', e)
+            print('Exception:', e)
 
     def Error(self, s):
         print(s)
@@ -511,14 +508,16 @@ class Li:
             d.update(var)
         return d
 
-
+    def Present(self):
+        print("Li " + str(self.version) + " Build using Python 3.7.3")
+        print('Hit `run li your_script.l`, for more information contact @sanixdarker.')
 
 
 if __name__ == '__main__':
+    li = Li()
     if len(sys.argv[1:]) >= 1:
-        li = Li()
         for arg in sys.argv[1:]:
             with open(arg, 'r') as f:
                 li.Eval(li.Parse(f.read()))
     else:  # editor mode
-        Present()
+        li.Present()
