@@ -219,3 +219,105 @@ LITERALS = {
     NoneType: Null,
 }
 
+
+###############################################################################
+# Built-in Functions                                                          #
+###############################################################################
+
+def _Cond(func, val):
+    return all(func(val[i].val, val[i + 1].val) for i in range(len(val) - 1))
+
+
+def _Add(args):
+    return reduce(lambda x, y: Lit(x.val + y.val), args)
+
+
+def _Sub(args):
+    return reduce(lambda x, y: Lit(x.val - y.val), args)
+
+
+def _Mult(args):
+    return reduce(lambda x, y: Lit(x.val * y.val), args)
+
+
+def _Div(args):
+    return reduce(lambda x, y: Lit(x.val / y.val), args)
+
+
+def _Println(args):
+    for arg_ in args:
+        print(arg_)
+        print()
+
+
+def _Print(args):
+    for arg_ in args:
+        sys.stdout.write(arg_.__str__())
+    sys.stdout.flush()
+
+
+def _Eq(args):
+    return _Cond(lambda x, y: x == y, args)
+
+
+def _NEq(args):
+    return not _Eq(args)
+
+
+def _Lt(args):
+    return _Cond(lambda x, y: x < y, args)
+
+
+def _Gt(args):
+    return _Cond(lambda x, y: x > y, args)
+
+
+def _LtE(args):
+    return _Cond(lambda x, y: x <= y, args)
+
+
+def _GtE(args):
+    return _Cond(lambda x, y: x >= y, args)
+
+
+def _Len(args):
+    return sum(map(lambda x: len(x.val), args))
+
+
+def _Ins(args):
+    args[0].val.insert(args[1].val, args[2])
+    return args[2]
+
+
+def _Del(args):
+    return args[0].val.pop(args[1].val)
+
+
+def _Cut(args):
+    return [Lit(args[0].val[:args[1].val]), Lit(args[0].val[args[1].val:])]
+
+
+def _Map(args):
+    return map(lambda x: args[0].Eval([x]), args[1].val)
+
+
+def _Fold(args):
+    return reduce(lambda x, y: args[0].Eval([x, y]), args[1].val)
+
+
+def _Filter(args):
+    return filter(lambda x: args[0].Eval([x]).val, args[1].val)
+
+
+def _Assert(args):
+    if not _Eq(args):
+        print('Assert failed:', args[0], args[1])
+
+
+def _Round(args):
+    return int(round(args[0].val))
+
+
+def _Type(args):
+    return TYPES[type(args[0])]
+
