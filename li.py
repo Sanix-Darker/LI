@@ -63,43 +63,108 @@ class Li:
             )['open']: self.li_open,
 
             safe_check_attr_keyword(
-                keywords[lang], 'open', keywords['en']
-            )
-            ['read']: self.li_read,
+                keywords[lang], 'read', keywords['en']
+            )['read']: self.li_read,
+
             safe_check_attr_keyword(
-                keywords[lang], 'open', keywords['en']
-            )
-            ['write']: self.li_write,
+                keywords[lang], 'write', keywords['en']
+            )['write']: self.li_write,
+
             safe_check_attr_keyword(
-                keywords[lang], 'open', keywords['en']
-            )
-            ['close']: self.li_close,
+                keywords[lang], 'close', keywords['en']
+            )['close']: self.li_close,
+
             safe_check_attr_keyword(
-                keywords[lang], 'open', keywords['en']
-            )
-            ['+']: self._Add,
-            keywords[lang]['-']: self._Sub,
-            keywords[lang]['*']: self._Mult,
-            keywords[lang]['/']: self._Div,
-            keywords[lang]['print']: self._Print,
-            keywords[lang]['println']: self._Println,
-            keywords[lang]['=']: self._Eq,
-            keywords[lang]['!']: self._NEq,
-            keywords[lang]['<']: self._Lt,
-            keywords[lang]['>']: self._Gt,
-            keywords[lang]['<=']: self._LtE,
-            keywords[lang]['>=']: self._GtE,
-            keywords[lang]['len']: self._Len,
-            keywords[lang]['ins']: self._Ins,
-            keywords[lang]['del']: self._Del,
-            keywords[lang]['cut']: self._Cut,
-            keywords[lang]['map']: self._Map,
-            keywords[lang]['fold']: self._Fold,
-            keywords[lang]['filter']: self._Filter,
-            keywords[lang]['assert']: self._Assert,
-            keywords[lang]['round']: self._Round,
-            keywords[lang]['type']: self._Type,
-            keywords[lang]['import']: self._Import
+                keywords[lang], '+', keywords['en']
+            )['+']: self._Add,
+
+            safe_check_attr_keyword(
+                keywords[lang], '-', keywords['en']
+            )['-']: self._Sub,
+
+            safe_check_attr_keyword(
+                keywords[lang], '*', keywords['en']
+            )['*']: self._Mult,
+
+            safe_check_attr_keyword(
+                keywords[lang], '/', keywords['en']
+            )['/']: self._Div,
+
+            safe_check_attr_keyword(
+                keywords[lang], 'print', keywords['en']
+            )['print']: self._Print,
+
+            safe_check_attr_keyword(
+                keywords[lang], 'println', keywords['en']
+            )['println']: self._Println,
+
+            safe_check_attr_keyword(
+                keywords[lang], '=', keywords['en']
+            )['=']: self._Eq,
+
+            safe_check_attr_keyword(
+                keywords[lang], '!', keywords['en']
+            )['!']: self._NEq,
+
+            safe_check_attr_keyword(
+                keywords[lang], '<', keywords['en']
+            )['<']: self._Lt,
+
+            safe_check_attr_keyword(
+                keywords[lang], '>', keywords['en']
+            )['>']: self._Gt,
+
+            safe_check_attr_keyword(
+                keywords[lang], '<=', keywords['en']
+            )['<=']: self._LtE,
+
+            safe_check_attr_keyword(
+                keywords[lang], '>=', keywords['en']
+            )['>=']: self._GtE,
+
+            safe_check_attr_keyword(
+                keywords[lang], 'len', keywords['en']
+            )['len']: self._Len,
+
+            safe_check_attr_keyword(
+                keywords[lang], 'ins', keywords['en']
+            )['ins']: self._Ins,
+
+            safe_check_attr_keyword(
+                keywords[lang], 'del', keywords['en']
+            )['del']: self._Del,
+
+            safe_check_attr_keyword(
+                keywords[lang], 'cut', keywords['en']
+            )['cut']: self._Cut,
+
+            safe_check_attr_keyword(
+                keywords[lang], 'map', keywords['en']
+            )['map']: self._Map,
+
+            safe_check_attr_keyword(
+                keywords[lang], 'fold', keywords['en']
+            )['fold']: self._Fold,
+
+            safe_check_attr_keyword(
+                keywords[lang], 'filter', keywords['en']
+            )['filter']: self._Filter,
+
+            safe_check_attr_keyword(
+                keywords[lang], 'assert', keywords['en']
+            )['assert']: self._Assert,
+
+            safe_check_attr_keyword(
+                keywords[lang], 'round', keywords['en']
+            )['round']: self._Round,
+
+            safe_check_attr_keyword(
+                keywords[lang], 'type', keywords['en']
+            )['type']: self._Type,
+
+            safe_check_attr_keyword(
+                keywords[lang], 'import', keywords['en']
+            )['import']: self._Import
         }
 
         self.RESERVED = [*self.CATALOG.keys(), 'if', 'params', 'def', 'lit']
