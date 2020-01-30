@@ -8,12 +8,21 @@ import sys
 from os import open as os_open, O_RDWR as os_O_RDWR, read as os_read, write as os_write, close as os_close
 import string
 
+DEFAULT_LANG = "en"
 KEYWORDS = {
     "en": {
         'open': 'open', 'read': 'read', 'write': 'write', 'close': 'close',
         '+': '+', '-': '-', '*': '*', '/': '/', 'print': 'print',
         'println': 'println', '=': '=', '!': '!', '<': '<', '>': '>', '<=': '<=',
         '>=': '>=', 'len': 'len', 'ins': 'ins', 'del': 'del', 'cut': 'cut',
+        'map': 'map', 'fold': 'fold', 'filter': 'filter', 'assert': 'assert',
+        'round': 'round', 'type': 'type', 'import': 'import'
+    },
+    "fr": {
+        'open': 'ouvre', 'read': 'lit', 'write': 'ecrit', 'close': 'ferme',
+        '+': '+', '-': '-', '*': '*', '/': '/', 'print': 'affiche',
+        'println': 'afficheln', '=': '=', '!': '!', '<': '<', '>': '>', '<=': '<=',
+        '>=': '>=', 'len': 'taille', 'ins': 'ins', 'del': 'supr', 'cut': 'cut',
         'map': 'map', 'fold': 'fold', 'filter': 'filter', 'assert': 'assert',
         'round': 'round', 'type': 'type', 'import': 'import'
     },
@@ -27,6 +36,7 @@ def safe_check_attr_keyword(obj, key, default_obj):
     try:
         return obj[key]
     except Exception as es:
+        print("es: ", es)
         return default_obj[key]
 
 
@@ -59,112 +69,112 @@ class Li:
 
         self.CATALOG = {
             safe_check_attr_keyword(
-                keywords[lang], 'open', keywords['en']
-            )['open']: self.li_open,
+                keywords[lang], 'open', KEYWORDS[DEFAULT_LANG]
+            ): self.li_open,
 
             safe_check_attr_keyword(
-                keywords[lang], 'read', keywords['en']
-            )['read']: self.li_read,
+                keywords[lang], 'read', KEYWORDS[DEFAULT_LANG]
+            ): self.li_read,
 
             safe_check_attr_keyword(
-                keywords[lang], 'write', keywords['en']
-            )['write']: self.li_write,
+                keywords[lang], 'write', KEYWORDS[DEFAULT_LANG]
+            ): self.li_write,
 
             safe_check_attr_keyword(
-                keywords[lang], 'close', keywords['en']
-            )['close']: self.li_close,
+                keywords[lang], 'close', KEYWORDS[DEFAULT_LANG]
+            ): self.li_close,
 
             safe_check_attr_keyword(
-                keywords[lang], '+', keywords['en']
-            )['+']: self._Add,
+                keywords[lang], '+', KEYWORDS[DEFAULT_LANG]
+            ): self._Add,
 
             safe_check_attr_keyword(
-                keywords[lang], '-', keywords['en']
-            )['-']: self._Sub,
+                keywords[lang], '-', KEYWORDS[DEFAULT_LANG]
+            ): self._Sub,
 
             safe_check_attr_keyword(
-                keywords[lang], '*', keywords['en']
-            )['*']: self._Mult,
+                keywords[lang], '*', KEYWORDS[DEFAULT_LANG]
+            ): self._Mult,
 
             safe_check_attr_keyword(
-                keywords[lang], '/', keywords['en']
-            )['/']: self._Div,
+                keywords[lang], '/', KEYWORDS[DEFAULT_LANG]
+            ): self._Div,
 
             safe_check_attr_keyword(
-                keywords[lang], 'print', keywords['en']
-            )['print']: self._Print,
+                keywords[lang], 'print', KEYWORDS[DEFAULT_LANG]
+            ): self._Print,
 
             safe_check_attr_keyword(
-                keywords[lang], 'println', keywords['en']
-            )['println']: self._Println,
+                keywords[lang], 'println', KEYWORDS[DEFAULT_LANG]
+            ): self._Println,
 
             safe_check_attr_keyword(
-                keywords[lang], '=', keywords['en']
-            )['=']: self._Eq,
+                keywords[lang], '=', KEYWORDS[DEFAULT_LANG]
+            ): self._Eq,
 
             safe_check_attr_keyword(
-                keywords[lang], '!', keywords['en']
-            )['!']: self._NEq,
+                keywords[lang], '!', KEYWORDS[DEFAULT_LANG]
+            ): self._NEq,
 
             safe_check_attr_keyword(
-                keywords[lang], '<', keywords['en']
-            )['<']: self._Lt,
+                keywords[lang], '<', KEYWORDS[DEFAULT_LANG]
+            ): self._Lt,
 
             safe_check_attr_keyword(
-                keywords[lang], '>', keywords['en']
-            )['>']: self._Gt,
+                keywords[lang], '>', KEYWORDS[DEFAULT_LANG]
+            ): self._Gt,
 
             safe_check_attr_keyword(
-                keywords[lang], '<=', keywords['en']
-            )['<=']: self._LtE,
+                keywords[lang], '<=', KEYWORDS[DEFAULT_LANG]
+            ): self._LtE,
 
             safe_check_attr_keyword(
-                keywords[lang], '>=', keywords['en']
-            )['>=']: self._GtE,
+                keywords[lang], '>=', KEYWORDS[DEFAULT_LANG]
+            ): self._GtE,
 
             safe_check_attr_keyword(
-                keywords[lang], 'len', keywords['en']
-            )['len']: self._Len,
+                keywords[lang], 'len', KEYWORDS[DEFAULT_LANG]
+            ): self._Len,
 
             safe_check_attr_keyword(
-                keywords[lang], 'ins', keywords['en']
-            )['ins']: self._Ins,
+                keywords[lang], 'ins', KEYWORDS[DEFAULT_LANG]
+            ): self._Ins,
 
             safe_check_attr_keyword(
-                keywords[lang], 'del', keywords['en']
-            )['del']: self._Del,
+                keywords[lang], 'del', KEYWORDS[DEFAULT_LANG]
+            ): self._Del,
 
             safe_check_attr_keyword(
-                keywords[lang], 'cut', keywords['en']
-            )['cut']: self._Cut,
+                keywords[lang], 'cut', KEYWORDS[DEFAULT_LANG]
+            ): self._Cut,
 
             safe_check_attr_keyword(
-                keywords[lang], 'map', keywords['en']
-            )['map']: self._Map,
+                keywords[lang], 'map', KEYWORDS[DEFAULT_LANG]
+            ): self._Map,
 
             safe_check_attr_keyword(
-                keywords[lang], 'fold', keywords['en']
-            )['fold']: self._Fold,
+                keywords[lang], 'fold', KEYWORDS[DEFAULT_LANG]
+            ): self._Fold,
 
             safe_check_attr_keyword(
-                keywords[lang], 'filter', keywords['en']
-            )['filter']: self._Filter,
+                keywords[lang], 'filter', KEYWORDS[DEFAULT_LANG]
+            ): self._Filter,
 
             safe_check_attr_keyword(
-                keywords[lang], 'assert', keywords['en']
-            )['assert']: self._Assert,
+                keywords[lang], 'assert', KEYWORDS[DEFAULT_LANG]
+            ): self._Assert,
 
             safe_check_attr_keyword(
-                keywords[lang], 'round', keywords['en']
-            )['round']: self._Round,
+                keywords[lang], 'round', KEYWORDS[DEFAULT_LANG]
+            ): self._Round,
 
             safe_check_attr_keyword(
-                keywords[lang], 'type', keywords['en']
-            )['type']: self._Type,
+                keywords[lang], 'type', KEYWORDS[DEFAULT_LANG]
+            ): self._Type,
 
             safe_check_attr_keyword(
-                keywords[lang], 'import', keywords['en']
-            )['import']: self._Import
+                keywords[lang], 'import', KEYWORDS[DEFAULT_LANG]
+            ): self._Import
         }
 
         self.RESERVED = [*self.CATALOG.keys(), 'if', 'params', 'def', 'lit']
@@ -490,11 +500,11 @@ class Li:
         env = {}
         if kwargs:
             json_dict.update(kwargs)
-        try:
-            self._Eval(json_dict, env)
-            return env['main'].Eval([])
-        except Exception as e:
-            print('Exception:', e)
+        # try:
+        self._Eval(json_dict, env)
+        return env['main'].Eval([])
+        # except Exception as e:
+        #     print('Exception:', e)
 
     def Error(self, s):
         print(s)
@@ -638,7 +648,7 @@ class Li:
 
 
 if __name__ == '__main__':
-    li = Li()
+    li = Li(lang="fr")
     if len(sys.argv[1:]) >= 1:
         for arg in sys.argv[1:]:
             with open(arg, 'r') as f:

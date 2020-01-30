@@ -1,3 +1,3 @@
 main:def() {
-    println("Hello World !!!")
+    afficheln("Hello World !!!")
 }
