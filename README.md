@@ -47,7 +47,27 @@ In French "langage interprété" Or `IL` in english for Interpreted Language, is
        }'                            -> if/else
 ```
 
-## Example of `li` code
+## Build Release
+
+Using Pyinstaller, hit this command 
+
+```
+pyinstaller ./li.py --onefile --name li
+```
+
+pyinstaller will generate the executable for Li in `./dist`, so that you will now run :
+```
+cd dist
+./li ./hello.l
+```
+
+## With Source-code
+
+Or using the sour-code by running li's script with :
+`python li.py ./hello.l`
+
+
+## Examples and tests
 
 Example of LI code :
 INPUT:
@@ -75,7 +95,7 @@ Hit theese commands:
 
 ```shell
 # The simple hello world script
-python li.py ./hello.l
+li ./hello.l
 ```
 
 - EXPECTED OUTPUT :
@@ -91,7 +111,7 @@ Taille de [1,2,3]  : 3
 
 ```
 # The count-down from 100 to 0
-python li.py ./tests/count.l
+li ./tests/count.l
 ```
 
 EXPECTED OUTPUT :
@@ -104,19 +124,6 @@ Simple count down from
 100 99 98 97 96 95 94 93 92 91 90 89 88 87 86 85 84 83 82 81 80 79 78 77 76 75 74 73 72 71 70 69 68 67 66 65 64 63 62 61 60 59 58 57 56 55 54 53 52 51 50 49 48 47 46 45 44 43 42 41 40 39 38 37 36 35 34 33 32 31 30 29 28 27 26 25 24 23 22 21 20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 
 ```
 
-## Build Release
-
-Using Pyinstaller, hit this command 
-
-```
-pyinstaller ./li.py --onefile --name li
-```
-
-pyinstaller will generate the executable for Li in `./dist`, so that you will now run :
-```
-cd dist
-./li ./hello.l
-```
 
 ## Author
 
