@@ -1,4 +1,5 @@
 main:fonc() {
-    affiche_xa("Hello World !!!")
-    affiche( "Taille de [1,2,3] =" taille( [1,2,3] ) )
+    affiche("Hello World !!!")
+    val:ask("h:")
+    affiche_xa("Bienvenue " val)
 }

@@ -2,17 +2,18 @@
 
 In French "langage interprété" Or `IL` in english for Interpreted Language, is a simple programming language Based on some Python Classes.
 
+<img src="./images/demo.gif"/>
+
 ## Requirements
 
-- Python (3.x) is all you need
+- Python (3.x) is all you need.
 - PyInstaller (pip3 install pyinstaller) |Optional, if you want to generate the executable of li
-- Any lib required
+- Any lib required.
 
 ## Features
 
  - Easily extendable with modules.
  - First class functions.
- - Fully representable in JSON.
  - String, list, number, dictionary, null, and function types
 
 ## Syntax
