@@ -504,11 +504,11 @@ class Li:
         env = {}
         if kwargs:
             json_dict.update(kwargs)
-        # try:
-        self._Eval(json_dict, env)
-        return env['main'].Eval([])
-        # except Exception as e:
-        #     print('Exception:', e)
+        try:
+            self._Eval(json_dict, env)
+            return env['main'].Eval([])
+        except Exception as e:
+            print('Exception:', e)
 
     def Error(self, s):
         print(s)
