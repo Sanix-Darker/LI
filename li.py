@@ -71,6 +71,7 @@ def li_write(args):
 def li_close(args):
     return os_close(args[0].val)
 
+
 # ------------------------------------------------------------------------------
 # > The class LI                                                           #
 # ------------------------------------------------------------------------------
@@ -311,10 +312,18 @@ class Li:
 
     class LiNumber(LiLiteral):
         def json(self):
+            """
+
+            :return:
+            """
             return self.val
 
     class LiNull(LiLiteral):
         def json(self):
+            """
+
+            :return:
+            """
             return self.val
 
         def __str__(self):
@@ -328,6 +337,10 @@ class Li:
                 self._run_env = run_env
 
             def copy(self):
+                """
+
+                :return:
+                """
                 env = {}
                 env.update(self._env)
                 env.update(self._run_env)
@@ -337,6 +350,12 @@ class Li:
                 return o == self.val
 
             def get(self, k, default=None):
+                """
+
+                :param k:
+                :param default:
+                :return:
+                """
                 return self.copy().get(k, default)
 
             def __getitem__(self, k):
@@ -356,15 +375,30 @@ class Li:
             self.val = self
 
         def json(self):
+            """
+
+            :return:
+            """
             return dict([('params', self._params), ('fonc', self._def)])
 
         def Eval(self, args):
+            """
+
+            :param args:
+            :return:
+            """
             li = Li()
             return li._ExecLiList(
                 self._def,
                 self._LiFunctionEnv(self._env, dict(zip(self._params, args)), self))
 
     def Lit(self, val, env=None):
+        """
+
+        :param val:
+        :param env:
+        :return:
+        """
         if env is None:
             env = {}
         if isinstance(val, self.Type):
@@ -376,83 +410,209 @@ class Li:
     # -----------------------------------------------------------------------------
 
     def _Cond(self, func, val):
+        """
+
+        :param func:
+        :param val:
+        :return:
+        """
         return all(func(val[i].val, val[i + 1].val) for i in range(len(val) - 1))
 
     def _Add(self, args):
+        """
+
+        :param args:
+        :return:
+        """
         return reduce(lambda x, y: self.Lit(x.val + y.val), args)
 
     def _Sub(self, args):
+        """
+
+        :param args:
+        :return:
+        """
         return reduce(lambda x, y: self.Lit(x.val - y.val), args)
 
     def _Mult(self, args):
+        """
+
+        :param args:
+        :return:
+        """
         return reduce(lambda x, y: self.Lit(x.val * y.val), args)
 
     def _Div(self, args):
+        """
+
+        :param args:
+        :return:
+        """
         return reduce(lambda x, y: self.Lit(x.val / y.val), args)
 
     def _Println(self, args):
+        """
+
+        :param args:
+        :return:
+        """
         for arg_ in args:
             print(arg_)
 
     def _Scanf(self, args=None):
+        """
+
+        :param args:
+        :return:
+        """
         return input()
 
     def _Print(self, args):
+        """
+
+        :param args:
+        :return:
+        """
         for arg_ in args:
             sys.stdout.write(arg_.__str__())
         sys.stdout.flush()
 
     def _Eq(self, args):
+        """
+
+        :param args:
+        :return:
+        """
         return self._Cond(lambda x, y: x == y, args)
 
     def _NEq(self, args):
+        """
+
+        :param args:
+        :return:
+        """
         return not self._Eq(args)
 
     def _Lt(self, args):
+        """
+
+        :param args:
+        :return:
+        """
         return self._Cond(lambda x, y: x < y, args)
 
     def _Gt(self, args):
+        """
+
+        :param args:
+        :return:
+        """
         return self._Cond(lambda x, y: x > y, args)
 
     def _LtE(self, args):
+        """
+
+        :param args:
+        :return:
+        """
         return self._Cond(lambda x, y: x <= y, args)
 
     def _GtE(self, args):
+        """
+
+        :param args:
+        :return:
+        """
         return self._Cond(lambda x, y: x >= y, args)
 
     def _Len(self, args):
+        """
+
+        :param args:
+        :return:
+        """
         return sum(map(lambda x: len(x.val), args))
 
     def _Ins(self, args):
+        """
+
+        :param args:
+        :return:
+        """
         args[0].val.insert(args[1].val, args[2])
         return args[2]
 
     def _Del(self, args):
+        """
+
+        :param args:
+        :return:
+        """
         return args[0].val.pop(args[1].val)
 
     def _Cut(self, args):
+        """
+
+        :param args:
+        :return:
+        """
         return [self.Lit(args[0].val[:args[1].val]), self.Lit(args[0].val[args[1].val:])]
 
     def _Map(self, args):
+        """
+
+        :param args:
+        :return:
+        """
         return map(lambda x: args[0].Eval([x]), args[1].val)
 
     def _Fold(self, args):
+        """
+
+        :param args:
+        :return:
+        """
         return reduce(lambda x, y: args[0].Eval([x, y]), args[1].val)
 
     def _Filter(self, args):
+        """
+
+        :param args:
+        :return:
+        """
         return filter(lambda x: args[0].Eval([x]).val, args[1].val)
 
     def _Assert(self, args):
+        """
+
+        :param args:
+        :return:
+        """
         if not self._Eq(args):
             print('[x] Assert failed:', args[0], args[1])
 
     def _Round(self, args):
+        """
+
+        :param args:
+        :return:
+        """
         return int(round(args[0].val))
 
     def _Type(self, args):
+        """
+
+        :param args:
+        :return:
+        """
         return self.TYPES[type(args[0])]
 
     def _Import(self, args):
+        """
+
+        :param args:
+        :return:
+        """
         for arg_ in args:
             module = __import__(arg_.val)
             self.CATALOG.update(module.CATALOG)
@@ -462,6 +622,12 @@ class Li:
     # -----------------------------------------------------------------------------
 
     def _ExecLiList(self, val, env):
+        """
+
+        :param val:
+        :param env:
+        :return:
+        """
         if len(val) == 0:
             return self.Lit(None)
         for exp in val[:-1]:
@@ -469,6 +635,13 @@ class Li:
         return self._Eval(val[-1], env, True)
 
     def _EvalLiList(self, exp, env, tail_pos=False):
+        """
+
+        :param exp:
+        :param env:
+        :param tail_pos:
+        :return:
+        """
         if exp[0] in self.CATALOG:
             return self.Lit(self.CATALOG[exp[0]](exp[1:]))
         if isinstance(exp[0], (self.LiDict, self.LiList, self.LiString)):
@@ -481,6 +654,13 @@ class Li:
         raise self.LiSyntaxError('not a function name, env:', env)
 
     def _IfBlock(self, exp, env, tail_pos=False):
+        """
+
+        :param exp:
+        :param env:
+        :param tail_pos:
+        :return:
+        """
         for i in range(0, len(exp) - 1, 2):
             if self._Eval(exp[i], env).val:
                 return self._ExecLiList(exp[i + 1], env)
@@ -489,6 +669,13 @@ class Li:
         return self.Lit(None)
 
     def _Eval(self, exp, env, tail_pos=False):
+        """
+
+        :param exp:
+        :param env:
+        :param tail_pos:
+        :return:
+        """
         li = Li()
         if isinstance(exp, self.Type):
             return exp
@@ -532,6 +719,12 @@ class Li:
             raise self.LiUnboundVariableError(e)
 
     def Eval(self, json_dict, **kwargs):
+        """
+
+        :param json_dict:
+        :param kwargs:
+        :return:
+        """
         env = {}
         if kwargs:
             json_dict.update(kwargs)
@@ -542,10 +735,20 @@ class Li:
             print('Exception:', e)
 
     def Error(self, s):
+        """
+
+        :param s:
+        :return:
+        """
         print(s)
         exit(0)
 
     def _ParseLiString(self, code):
+        """
+
+        :param code:
+        :return:
+        """
         buf = ''
         for i in range(len(code)):
             if code[i] == '"' and code[i - 1] != '\\':
@@ -557,6 +760,11 @@ class Li:
                 buf += code[i]
 
     def _GetParens(self, code):
+        """
+
+        :param code:
+        :return:
+        """
         val = 0
         for i in range(len(code)):
             if code[i] == '(':
@@ -568,6 +776,12 @@ class Li:
         self.Error('No closing parens')
 
     def _ParseCall(self, code, name):
+        """
+
+        :param code:
+        :param name:
+        :return:
+        """
         args, rest = self._GetParens(code)
         args_list = []
         while len(args.strip()):
@@ -576,6 +790,12 @@ class Li:
         return rest, [name] + args_list
 
     def _ParseCond(self, if_list, code):
+        """
+
+        :param if_list:
+        :param code:
+        :return:
+        """
         cond, code = code.split('{', 1)
         if_list.append(self._Parse(cond)[1])
         code, statements = self._ParseBlock('{' + code)
@@ -583,6 +803,11 @@ class Li:
         return code
 
     def _ParseIf(self, code):
+        """
+
+        :param code:
+        :return:
+        """
         if_list = ['if']
         code = self._ParseCond(if_list, code)
         temp, next_ = self._Parse(code)
@@ -597,6 +822,11 @@ class Li:
         return code, if_list
 
     def _ParseBlock(self, code):
+        """
+
+        :param code:
+        :return:
+        """
         code = code.lstrip()
         if code[0] != '{':
             self.Error('Code block must begin with "{"')
@@ -608,12 +838,22 @@ class Li:
         return code.lstrip()[1:], statements
 
     def _ParseLiFunction(self, code):
+        """
+
+        :param code:
+        :return:
+        """
         params, rest = code.split(')', 1)
         params = params.split()
         rest, body = self._ParseBlock(rest)
         return rest, {'params': params, 'fonc': body}
 
     def _ParseLiList(self, code):
+        """
+
+        :param code:
+        :return:
+        """
         statements = []
         while code.lstrip()[0] != ']':
             code, statement = self._Parse(code)
@@ -621,12 +861,22 @@ class Li:
         return code.lstrip()[1:], {'lit': statements}
 
     def _ParseLiDict(self, code):
+        """
+
+        :param code:
+        :return:
+        """
         code, d_list = self._ParseBlock('{' + code)
         d = {}
         [d.update(x) for x in d_list]
         return code, {'lit': d}
 
     def _GetNum(self, num):
+        """
+
+        :param num:
+        :return:
+        """
         if num == 'null':
             return None
         if num.isdigit():
@@ -637,6 +887,11 @@ class Li:
             return num
 
     def _Parse(self, code):
+        """
+
+        :param code:
+        :return:
+        """
         global i
         buf = ''
         has_space = False
@@ -670,6 +925,11 @@ class Li:
         return code[i:], self._GetNum(buf)
 
     def Parse(self, code):
+        """
+
+        :param code:
+        :return:
+        """
         d = {}
         while code:
             code, var = self._Parse(code)
@@ -677,6 +937,7 @@ class Li:
         return d
 
     def Present(self):
+
         print("Li " + str(self.version) + " Build using Python 3.7.3")
         print('Hit `li your_script.l`, for more information contact @sanixdarker.')
         print('--')
