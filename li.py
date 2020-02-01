@@ -14,7 +14,6 @@
 # -----------------------------------------------------------------------------------------------------
 #
 
-
 from functools import reduce
 import copy
 import numbers
@@ -45,6 +44,10 @@ KEYWORDS = {
 }
 
 
+# ------------------------------------------------------------------------------
+# > Extras functions                                                           #
+# ------------------------------------------------------------------------------
+
 def safe_check_attr_keyword(obj, key):
     try:
         return obj[key]
@@ -52,6 +55,25 @@ def safe_check_attr_keyword(obj, key):
         print("es: ", es)
         exit()
 
+
+def li_open(args):
+    return os_open(args[0].val.strip(), os_O_RDWR)
+
+
+def li_read(args):
+    return os_read(args[0].val, args[1].val)
+
+
+def li_write(args):
+    return os_write(args[0].val, args[1].val)
+
+
+def li_close(args):
+    return os_close(args[0].val)
+
+# ------------------------------------------------------------------------------
+# > The class LI                                                           #
+# ------------------------------------------------------------------------------
 
 class Li:
     def __init__(self, lang="lang", keywords=None, ):
@@ -85,19 +107,19 @@ class Li:
         self.CATALOG = {
             safe_check_attr_keyword(
                 keywords[lang], 'open'
-            ): self.li_open,
+            ): li_open,
 
             safe_check_attr_keyword(
                 keywords[lang], 'read'
-            ): self.li_read,
+            ): li_read,
 
             safe_check_attr_keyword(
                 keywords[lang], 'write'
-            ): self.li_write,
+            ): li_write,
 
             safe_check_attr_keyword(
                 keywords[lang], 'close'
-            ): self.li_close,
+            ): li_close,
 
             safe_check_attr_keyword(
                 keywords[lang], '+'
@@ -198,20 +220,7 @@ class Li:
 
         self.RESERVED = [*self.CATALOG.keys(), 'if', 'params', 'fonc', 'lit']
 
-    # > Extras functions                                                           #
     # ------------------------------------------------------------------------------
-    def li_open(self, args):
-        return os_open(args[0].val.strip(), os_O_RDWR)
-
-    def li_read(self, args):
-        return os_read(args[0].val, args[1].val)
-
-    def li_write(self, args):
-        return os_write(args[0].val, args[1].val)
-
-    def li_close(self, args):
-        return os_close(args[0].val)
-
     # > Errors                                                                     #
     # ------------------------------------------------------------------------------
 
@@ -224,29 +233,30 @@ class Li:
             self.e = e
 
         def __str__(self):
-            return self.name + ': ' + self.e.__str__()
+            return '[/]' + self.name + ': ' + self.e.__str__()
 
     class LiUnboundVariableError(Error):
         def __init__(self, e):
             self.e = e
 
         def __str__(self):
-            return 'unbound variable: ' + self.e.__str__()
+            return '[:]' + 'Unbound variable: ' + self.e.__str__()
 
     class LiSyntaxError(Error):
         def __init__(self, msg):
             self.msg = msg
 
         def __str__(self):
-            return self.msg
+            return '[x]' + self.msg
 
     class LiReservedWordError(Error):
         def __init__(self, word):
             self.word = word
 
         def __str__(self):
-            return self.word + ' is a reserved word'
+            return '[-]' + self.word + ' is a reserved word'
 
+    # -----------------------------------------------------------------------------
     # > Types                                                                     #
     # -----------------------------------------------------------------------------
 
@@ -361,6 +371,7 @@ class Li:
             return val
         return self.LITERALS[type(val)](val, env)
 
+    # -----------------------------------------------------------------------------
     # > Built-in LiFunctions                                                      #
     # -----------------------------------------------------------------------------
 
@@ -433,7 +444,7 @@ class Li:
 
     def _Assert(self, args):
         if not self._Eq(args):
-            print('Assert failed:', args[0], args[1])
+            print('[x] Assert failed:', args[0], args[1])
 
     def _Round(self, args):
         return int(round(args[0].val))
@@ -446,9 +457,9 @@ class Li:
             module = __import__(arg_.val)
             self.CATALOG.update(module.CATALOG)
 
-    ###############################################################################
-    # Interpreter                                                                 #
-    ###############################################################################
+    # -----------------------------------------------------------------------------
+    # > Interpreter                                                                 #
+    # -----------------------------------------------------------------------------
 
     def _ExecLiList(self, val, env):
         if len(val) == 0:
@@ -667,7 +678,7 @@ class Li:
 
     def Present(self):
         print("Li " + str(self.version) + " Build using Python 3.7.3")
-        print('Hit `run li your_script.l`, for more information contact @sanixdarker.')
+        print('Hit `li your_script.l`, for more information contact @sanixdarker.')
         print('--')
 
 
