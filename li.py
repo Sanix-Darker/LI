@@ -49,7 +49,6 @@ KEYWORDS = {
 # ------------------------------------------------------------------------------
 
 
-
 # ------------------------------------------------------------------------------
 # > The class LI                                                           #
 # ------------------------------------------------------------------------------
@@ -84,115 +83,115 @@ class Li:
         }
 
         self.CATALOG = {
-            safe_check_attr_keyword(
+            self.safe_check_attr_keyword(
                 keywords[lang], 'open'
             ): self.li_open,
 
-            safe_check_attr_keyword(
+            self.safe_check_attr_keyword(
                 keywords[lang], 'read'
             ): self.li_read,
 
-            safe_check_attr_keyword(
+            self.safe_check_attr_keyword(
                 keywords[lang], 'write'
             ): self.li_write,
 
-            safe_check_attr_keyword(
+            self.safe_check_attr_keyword(
                 keywords[lang], 'close'
             ): self.li_close,
 
-            safe_check_attr_keyword(
+            self.safe_check_attr_keyword(
                 keywords[lang], '+'
             ): self._Add,
 
-            safe_check_attr_keyword(
+            self.safe_check_attr_keyword(
                 keywords[lang], '-'
             ): self._Sub,
 
-            safe_check_attr_keyword(
+            self.safe_check_attr_keyword(
                 keywords[lang], '*'
             ): self._Mult,
 
-            safe_check_attr_keyword(
+            self.safe_check_attr_keyword(
                 keywords[lang], '/'
             ): self._Div,
 
-            safe_check_attr_keyword(
+            self.safe_check_attr_keyword(
                 keywords[lang], 'print'
             ): self._Print,
 
-            safe_check_attr_keyword(
+            self.safe_check_attr_keyword(
                 keywords[lang], 'println'
             ): self._Println,
 
-            safe_check_attr_keyword(
+            self.safe_check_attr_keyword(
                 keywords[lang], 'scanf'
             ): self._Scanf,
 
-            safe_check_attr_keyword(
+            self.safe_check_attr_keyword(
                 keywords[lang], '='
             ): self._Eq,
 
-            safe_check_attr_keyword(
+            self.safe_check_attr_keyword(
                 keywords[lang], '!'
             ): self._NEq,
 
-            safe_check_attr_keyword(
+            self.safe_check_attr_keyword(
                 keywords[lang], '<'
             ): self._Lt,
 
-            safe_check_attr_keyword(
+            self.safe_check_attr_keyword(
                 keywords[lang], '>'
             ): self._Gt,
 
-            safe_check_attr_keyword(
+            self.safe_check_attr_keyword(
                 keywords[lang], '<='
             ): self._LtE,
 
-            safe_check_attr_keyword(
+            self.safe_check_attr_keyword(
                 keywords[lang], '>='
             ): self._GtE,
 
-            safe_check_attr_keyword(
+            self.safe_check_attr_keyword(
                 keywords[lang], 'len'
             ): self._Len,
 
-            safe_check_attr_keyword(
+            self.safe_check_attr_keyword(
                 keywords[lang], 'ins'
             ): self._Ins,
 
-            safe_check_attr_keyword(
+            self.safe_check_attr_keyword(
                 keywords[lang], 'del'
             ): self._Del,
 
-            safe_check_attr_keyword(
+            self.safe_check_attr_keyword(
                 keywords[lang], 'cut'
             ): self._Cut,
 
-            safe_check_attr_keyword(
+            self.safe_check_attr_keyword(
                 keywords[lang], 'map'
             ): self._Map,
 
-            safe_check_attr_keyword(
+            self.safe_check_attr_keyword(
                 keywords[lang], 'fold'
             ): self._Fold,
 
-            safe_check_attr_keyword(
+            self.safe_check_attr_keyword(
                 keywords[lang], 'filter'
             ): self._Filter,
 
-            safe_check_attr_keyword(
+            self.safe_check_attr_keyword(
                 keywords[lang], 'assert'
             ): self._Assert,
 
-            safe_check_attr_keyword(
+            self.safe_check_attr_keyword(
                 keywords[lang], 'round'
             ): self._Round,
 
-            safe_check_attr_keyword(
+            self.safe_check_attr_keyword(
                 keywords[lang], 'type'
             ): self._Type,
 
-            safe_check_attr_keyword(
+            self.safe_check_attr_keyword(
                 keywords[lang], 'import'
             ): self._Import
         }
