@@ -48,28 +48,6 @@ KEYWORDS = {
 # > Extras functions                                                           #
 # ------------------------------------------------------------------------------
 
-def safe_check_attr_keyword(obj, key):
-    try:
-        return obj[key]
-    except Exception as es:
-        print("es: ", es)
-        exit()
-
-
-def li_open(args):
-    return os_open(args[0].val.strip(), os_O_RDWR)
-
-
-def li_read(args):
-    return os_read(args[0].val, args[1].val)
-
-
-def li_write(args):
-    return os_write(args[0].val, args[1].val)
-
-
-def li_close(args):
-    return os_close(args[0].val)
 
 
 # ------------------------------------------------------------------------------
@@ -108,19 +86,19 @@ class Li:
         self.CATALOG = {
             safe_check_attr_keyword(
                 keywords[lang], 'open'
-            ): li_open,
+            ): self.li_open,
 
             safe_check_attr_keyword(
                 keywords[lang], 'read'
-            ): li_read,
+            ): self.li_read,
 
             safe_check_attr_keyword(
                 keywords[lang], 'write'
-            ): li_write,
+            ): self.li_write,
 
             safe_check_attr_keyword(
                 keywords[lang], 'close'
-            ): li_close,
+            ): self.li_close,
 
             safe_check_attr_keyword(
                 keywords[lang], '+'
@@ -256,6 +234,29 @@ class Li:
 
         def __str__(self):
             return '[-]' + self.word + ' is a reserved word'
+
+    # -----------------------------------------------------------------------------
+    # > Extras methods for managing file on operating system                      #
+    # -----------------------------------------------------------------------------
+
+    def safe_check_attr_keyword(self, obj, key):
+        try:
+            return obj[key]
+        except Exception as es:
+            print("es: ", es)
+            exit()
+
+    def li_open(self, args):
+        return os_open(args[0].val.strip(), os_O_RDWR)
+
+    def li_read(self, args):
+        return os_read(args[0].val, args[1].val)
+
+    def li_write(self, args):
+        return os_write(args[0].val, args[1].val)
+
+    def li_close(self, args):
+        return os_close(args[0].val)
 
     # -----------------------------------------------------------------------------
     # > Types                                                                     #
