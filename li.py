@@ -36,7 +36,7 @@ KEYWORDS = {
     "lang": {
         'open': 'open', 'read': 'read', 'write': 'write', 'close': 'close',
         '+': '+', '-': '-', '*': '*', '/': '/', 'print': 'affiche',
-        'println': 'affiche_xa', 'scanf': 'ask', '=': '=', '!': '!', '<': '<',
+        'println': 'affiche_xa', 'scanf': 'demande', '=': '=', '!': '!', '<': '<',
         '>': '>', '<=': '<=', '>=': '>=', 'len': 'taille', 'ins': 'ins', 'del': 'supr',
         'cut': 'cut', 'map': 'map', 'fold': 'fold', 'filter': 'filter', 'assert': 'assert',
         'round': 'round', 'type': 'type', 'import': 'import'
