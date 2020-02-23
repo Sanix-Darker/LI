@@ -219,7 +219,7 @@ class Li:
             ): self._Import
         }
 
-        self.RESERVED = [*self.CATALOG.keys(), 'if', 'params', 'fonc', 'lit']
+        self.RESERVED = [*self.CATALOG.keys(), 'if', 'params', 'fonc', 'lit', 'tantque']
 
     # ------------------------------------------------------------------------------
     # > Errors                                                                     #
@@ -668,6 +668,21 @@ class Li:
             return self._ExecLiList(exp[-1], env)
         return self.Lit(None)
 
+    def _LoopBlock(self, exp, env, tail_pos=False):
+        """
+
+        :param exp:
+        :param env:
+        :param tail_pos:
+        :return:
+        """
+        for i in range(0, len(exp) - 1, 2):
+            while self._Eval(exp[i], env).val:
+                self._ExecLiList(exp[i + 1], env)
+        if len(exp) % 2:
+            return self._ExecLiList(exp[-1], env)
+        return self.Lit(None)
+
     def _Eval(self, exp, env, tail_pos=False):
         """
 
@@ -703,6 +718,8 @@ class Li:
             name = exp[0]
             if name == 'if':
                 return self._IfBlock(exp[1:], env, tail_pos)
+            if name == 'tantque':
+                return self._LoopBlock(exp[1:], env, tail_pos)
             exp = list(map(lambda x: self._Eval(x, env), exp))
             if exp[0] == env and tail_pos:
                 return exp, env
@@ -821,6 +838,17 @@ class Li:
             if_list.append(statements)
         return code, if_list
 
+    def _ParseLoop(self, code):
+        """
+
+        :param code:
+        :return:
+        """
+        tantque_list = ['tantque']
+        code = self._ParseCond(tantque_list, code)
+        temp, next_ = self._Parse(code)
+        return code, tantque_list
+
     def _ParseBlock(self, code):
         """
 
@@ -903,6 +931,8 @@ class Li:
             if has_space and buf or c in [']', '}', ')']:
                 if buf == 'if':
                     return self._ParseIf(code[i - 1:])
+                if buf == 'tantque':
+                    return self._ParseLoop(code[i - 1:])
                 return code[i - 1:], self._GetNum(buf)
             if c == ':':
                 rest, result = self._Parse(code[i:])
