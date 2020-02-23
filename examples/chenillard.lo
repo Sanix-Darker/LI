@@ -1,0 +1,15 @@
+allumes_et_eteins:func(pin){
+    allumes(pin) attends(2)
+    eteins(pin) attends(2)
+}
+
+main:fonc(){
+    port_arduino("/dev/ttyACM0")
+    affiche_xa("Programme du chenillard")
+    allumes_et_eteins(13)
+    tantque =(1 1) {
+        allumes_et_eteins(13)
+        allumes_et_eteins(12)
+        allumes_et_eteins(11)
+    }
+}

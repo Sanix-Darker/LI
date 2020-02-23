@@ -2,14 +2,14 @@
 
 #
 # -----------------------------------------------------------------------------------------------------
-#  _
-# | |    (_)
-# | |    | |
-# | |__  | |
-# |____| |_| 0.1
+#  _     _
+# | |   (_)_ __   ___
+# | |   | | '_ \ / _ \
+# | |___| | | | | (_) |
+# |_____|_|_| |_|\___/  0.1
 #
-# Welcome to Li's Class implementation
-# A simple Class that's allow you to code using your own words grammatically whatever the language you are using.
+# Welcome to Lino's Class implementation
+# A simple fork from Li for Arduino.
 # Created by Sanix-darker [ https://github.com/sanix-darker ]
 # -----------------------------------------------------------------------------------------------------
 #
@@ -17,7 +17,6 @@
 from functools import reduce
 import copy
 import numbers
-import sys
 from os import open as os_open, O_RDWR as os_O_RDWR, read as os_read, write as os_write, close as os_close
 import string
 
@@ -33,14 +32,14 @@ KEYWORDS = {
         'println': 'affiche_xa', 'scanf': 'demande', '=': '=', '!': '!', '<': '<',
         '>': '>', '<=': '<=', '>=': '>=', 'len': 'taille', 'ins': 'ins', 'del': 'supr',
         'cut': 'cut', 'map': 'map', 'fold': 'fold', 'filter': 'filter', 'assert': 'assert',
-        'round': 'round', 'type': 'type', 'import': 'import', 'digitalUp': 'allumes', 'digitalDown': 'eteinds',
+        'round': 'round', 'type': 'type', 'import': 'import', 'digitalUp': 'allumes', 'digitalDown': 'eteins',
         'wait': 'attends', 'set_arduino_port': 'port_arduino'
     }
 }
 
 
 # ------------------------------------------------------------------------------
-# > The class LI                                                               #
+# > The class LINO                                                             #
 # ------------------------------------------------------------------------------
 
 def safe_check_attr_keyword(obj, key):

@@ -50,12 +50,10 @@ main:fonc(){
     port_arduino("/dev/ttyACM0")
     tantque =(1 1) {
        affiche_xa(">> Haha, LED ON")
-       allumes(13)
-       attends(2)
+       allumes(13) attends(2)
 
        affiche_xa("<< Oups, LED OFF")
-       eteinds(13)
-       attends(2)
+       eteins(13) attends(2)
     }
 }
 ```
