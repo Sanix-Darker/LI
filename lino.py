@@ -1,6 +1,7 @@
 from li import Li, KEYWORDS
-from pyfirmata import Arduino
-import time
+import arduino_firmata.Arduino as Arduino
+import arduino_firmata.util as pyfirmata_util
+from time import sleep
 
 LINO_KEYWORDS = {
     "lang": {
@@ -20,12 +21,14 @@ class Lino(Li):
         self.lang = lang
         self.output = output
         self.board = Arduino(self.output)
+        self.it = pyfirmata_util.Iterator(self.board)
+        self.it.start()
         self.CATALOG = {
             **self.CATALOG["lang"],
         }
 
-    def digital_write(self, pin, status):
-        self.board.digital[pin].write(status)
+    def digital_write(self, pin, msg):
+        self.board.get_pin('d:' + str(pin) + ':o').write(msg)
 
     def digital_up(self, pin):
         self.digital_write(pin, 1)
@@ -34,4 +37,4 @@ class Lino(Li):
         self.digital_write(pin, 0)
 
     def wait(self, time_):
-        time.sleep(time_)
+        sleep(time_)

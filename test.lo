@@ -1,0 +1,9 @@
+main:fonc(){
+   affiche(">> Haha, LED ON")
+   allumes(13)
+   attends(2)
+
+   affiche("<< Oups, LED OFF")
+   eteinds(13)
+   attends(2)
+}
