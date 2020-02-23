@@ -14,7 +14,13 @@ A Fork from Li but only for Arduino.
  - First class functions.
  - String, list, number, dictionary, null, and function types
 
-## Build the portable version
+## PreInstallation
+
+- For Lino to run on your Arduino board, you need to install Arduino IDE (it will come with drivers and many other stuff)
+- Copy `./StandardFIrmata.ino`, check and upload it on your Arduino Board !
+- We all done, for the Hardware part, now we need to finish the software part with Lino interpreter.
+
+## Build the portable version of Lino
 
 Using Pyinstaller, hit this command to install pyinstaller :
 
@@ -46,14 +52,18 @@ Or using the sour-code by running li's script with :
 Example of LI code :
 INPUT:
 ```
+allumes_et_eteins:fonc(pin){
+    affiche_xa(">> Haha, LED ON")
+    allumes(pin) attends(1)
+
+    affiche_xa("<< Oups, LED OFF")
+    eteins(pin) attends(1)
+}
+
 main:fonc(){
     port_arduino("/dev/ttyACM0")
     tantque =(1 1) {
-       affiche_xa(">> Haha, LED ON")
-       allumes(13) attends(2)
-
-       affiche_xa("<< Oups, LED OFF")
-       eteins(13) attends(2)
+        allumes_et_eteins(13)
     }
 }
 ```
@@ -77,7 +87,7 @@ With your LED Blinking...
 
 ## Syntax
 
- The Documentation is in progress...
+ The Documentation + Synthax is in progress...
 
 ## Author
 
