@@ -426,6 +426,15 @@ class Lino:
         msg = int(args[1])
         self.board.digital[pin].write(msg)
 
+    def _SetDigitalRead(self, args):
+        pin = int(args[0])
+        self.board.analog[pin].enable_reporting()
+        self.board.digital[pin].mode = pyfirmata.INPUT
+
+    def _DigitalRead(self, args):
+        pin = int(args[0])
+        self.board.digital[pin].read()
+
     def _DigitalUp(self, args):
         pin = int(args[0].json())
         self._DigitalWrite([pin, 1])
