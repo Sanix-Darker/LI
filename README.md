@@ -1,3 +1,5 @@
+<img src="./images/logo.jpeg"/>
+
 # LI
 
 In French "langage interprété" Or `IL` in english for Interpreted Language, is a simple programming language Based on some Python Classes.
